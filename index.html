@@ -16,6 +16,7 @@
             overflow: hidden;
             font-family: Arial, sans-serif;
             animation: pulseBackground 4s infinite alternate;
+            -webkit-tap-highlight-color: transparent; /* Remove tap highlight on mobile */
         }
 
         @keyframes pulseBackground {
@@ -28,7 +29,7 @@
             max-width: 500px;
             padding: 20px;
             box-sizing: border-box;
-            display: none;  /* Initially hide the heart */
+            display: none;
         }
 
         .start-button {
@@ -41,6 +42,16 @@
             cursor: pointer;
             transition: all 0.3s ease;
             margin-bottom: 20px;
+            -webkit-tap-highlight-color: transparent;
+            user-select: none;
+            -webkit-user-select: none;
+            touch-action: manipulation; /* Improve touch behavior */
+        }
+
+        .start-button:active {
+            background: #ff3f3f;
+            color: black;
+            transform: scale(0.95);
         }
 
         .start-button:hover {
@@ -55,6 +66,7 @@
             width: 100%;
             height: auto;
             max-width: 400px;
+            touch-action: manipulation;
         }
 
         .heart-line {
@@ -65,7 +77,7 @@
             stroke-dashoffset: 300;
         }
 
-        #line1 { animation: none; }  /* Remove initial animations */
+        #line1 { animation: none; }
         #line2 { animation: none; }
         #line3 { animation: none; }
         #line4 { animation: none; }
@@ -130,13 +142,18 @@
             .heart-line {
                 stroke-width: 4;
             }
+
+            .start-button {
+                padding: 20px 40px; /* Larger touch target */
+                font-size: 24px; /* Larger text */
+            }
         }
     </style>
 </head>
 <body>
-    <button class="start-button" onclick="startAnimation()">Click Me</button>
+    <button class="start-button" id="startButton">Click Me</button>
     <div class="heart-container">
-        <svg viewBox="0 0 400 400" onclick="showMessage()">
+        <svg viewBox="0 0 400 400" id="heartSvg">
             <path id="line1" class="heart-line" d="M200,100 C130,50 50,100 50,170" />
             <path id="line2" class="heart-line" d="M350,170 C350,100 270,50 200,100" />
             <path id="line3" class="heart-line" d="M50,170 C50,250 150,300 200,350" />
@@ -156,9 +173,17 @@
         const specialMessage = "you know! You are my pizza even just thinking of you makes me happy…";
         let isMessageTyping = false;
 
+        function addTouchAndClickEvent(element, handler) {
+            element.addEventListener('click', handler);
+            element.addEventListener('touchstart', function(e) {
+                e.preventDefault(); // Prevent double-firing on mobile
+                handler(e);
+            });
+        }
+
         function startAnimation() {
             // Hide the button
-            document.querySelector('.start-button').style.display = 'none';
+            document.getElementById('startButton').style.display = 'none';
             
             // Show the heart container
             const heartContainer = document.querySelector('.heart-container');
@@ -220,6 +245,10 @@
 
             type();
         }
+
+        // Add touch and click events to both button and heart
+        addTouchAndClickEvent(document.getElementById('startButton'), startAnimation);
+        addTouchAndClickEvent(document.getElementById('heartSvg'), showMessage);
     </script>
 </body>
 </html>
