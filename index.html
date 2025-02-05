@@ -1,0 +1,187 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Heart Animation</title>
+    <style>
+        body {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            background: black;
+            margin: 0;
+            overflow: hidden;
+            font-family: Arial, sans-serif;
+            animation: pulseBackground 4s infinite alternate;
+        }
+
+        @keyframes pulseBackground {
+            0% { background-color: #000; }
+            100% { background-color: #200000; }
+        }
+
+        .heart-container {
+            width: 100%;
+            max-width: 400px;
+            padding: 20px;
+            box-sizing: border-box;
+        }
+
+        svg {
+            cursor: pointer;
+            width: 100%;
+            height: auto;
+            max-width: 300px;
+        }
+
+        .heart-line {
+            stroke: #ff3f3f;
+            stroke-width: 3;
+            fill: none;
+            stroke-dasharray: 300;
+            stroke-dashoffset: 300;
+        }
+
+        #line1 { animation: drawLine 1s linear forwards; }
+        #line2 { animation: drawLine 1s linear forwards 1s; }
+        #line3 { animation: drawLine 1s linear forwards 2s; }
+        #line4 { animation: drawLine 1s linear forwards 3s; }
+
+        @keyframes drawLine {
+            to { stroke-dashoffset: 0; }
+        }
+
+        .filled {
+            fill: #ff3f3f;
+            transition: fill 0.5s ease-in-out;
+        }
+
+        @keyframes glowEffect {
+            0% { filter: drop-shadow(0 0 5px #ff3f3f); }
+            100% { filter: drop-shadow(0 0 15px #ff3f3f); }
+        }
+
+        .heartbeat {
+            animation: heartbeat 0.6s infinite alternate, glowEffect 0.6s infinite alternate;
+        }
+
+        @keyframes heartbeat {
+            0% { transform: scale(1); }
+            100% { transform: scale(1.1); }
+        }
+
+        .bounce {
+            animation: bounce 0.5s ease-out;
+        }
+
+        @keyframes bounce {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.2); }
+            100% { transform: scale(1); }
+        }
+
+        .message {
+            color: #ff3f3f;
+            text-align: center;
+            margin-top: 20px;
+            font-size: clamp(16px, 5vw, 24px);
+            opacity: 0;
+            transition: opacity 0.5s ease;
+            padding: 0 20px;
+            word-wrap: break-word;
+        }
+
+        .message.show {
+            opacity: 1;
+        }
+
+        @media (max-width: 480px) {
+            .heart-container {
+                padding: 10px;
+            }
+            
+            svg {
+                max-width: 250px;
+            }
+
+            .heart-line {
+                stroke-width: 4;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="heart-container">
+        <svg viewBox="0 0 400 400" onclick="showMessage()">
+            <path id="line1" class="heart-line" d="M200,100 C130,50 50,100 50,170" />
+            <path id="line2" class="heart-line" d="M350,170 C350,100 270,50 200,100" />
+            <path id="line3" class="heart-line" d="M50,170 C50,250 150,300 200,350" />
+            <path id="line4" class="heart-line" d="M200,350 C250,300 350,250 350,170" />
+            <path id="fullHeart" d="M200,100 C130,50 50,100 50,170 
+                C50,250 150,300 200,350 
+                C250,300 350,250 350,170 
+                C350,100 270,50 200,100"
+                class="heart-line" style="fill: none; stroke: none;">
+            </path>
+        </svg>
+    </div>
+
+    <div class="message" id="message"></div>
+
+    <script>
+        const specialMessage = "You are my pizza even just thinking of you makes me happy…";
+        let isMessageTyping = false;
+
+        function showMessage() {
+            if (isMessageTyping) return;
+
+            const heart = document.querySelector('svg');
+            const message = document.getElementById('message');
+            const fullHeart = document.getElementById('fullHeart');
+
+            // Make heart beat
+            heart.classList.add('heartbeat', 'bounce');
+
+            // Remove bounce effect after animation ends
+            setTimeout(() => {
+                heart.classList.remove('bounce');
+            }, 500);
+
+            // Fill the heart with red
+            fullHeart.classList.add('filled');
+
+            // Show the message
+            message.classList.add('show');
+
+            // Type out the message
+            typeMessage(specialMessage, message);
+        }
+
+        function typeMessage(message, element) {
+            isMessageTyping = true;
+            let index = 0;
+            element.textContent = ''; // Clear previous text
+
+            function type() {
+                if (index < message.length) {
+                    element.textContent += message.charAt(index);
+                    index++;
+                    setTimeout(type, 50); // Typing speed
+                } else {
+                    isMessageTyping = false;
+                }
+            }
+
+            type();
+        }
+
+        // Auto-fill heart after all lines are drawn
+        setTimeout(() => {
+            document.getElementById('fullHeart').style.fill = "#ff3f3f";
+        }, 4000);
+    </script>
+</body>
+</html>
