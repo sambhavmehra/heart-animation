@@ -25,7 +25,7 @@
 
         .heart-container {
             width: 100%;
-            max-width: 500px;  /* Increased from 400px */
+            max-width: 500px;
             padding: 20px;
             box-sizing: border-box;
         }
@@ -34,7 +34,7 @@
             cursor: pointer;
             width: 100%;
             height: auto;
-            max-width: 400px;  /* Increased from 300px */
+            max-width: 400px;
         }
 
         .heart-line {
@@ -104,7 +104,7 @@
             }
             
             svg {
-                max-width: 300px;  /* Increased from 250px */
+                max-width: 300px;
             }
 
             .heart-line {
@@ -153,11 +153,11 @@
             // Fill the heart with red
             fullHeart.classList.add('filled');
 
-            // Show the message
-            message.classList.add('show');
-
-            // Type out the message
-            typeMessage(specialMessage, message);
+            // Show the message after 3 seconds
+            setTimeout(() => {
+                message.classList.add('show');
+                typeMessage(specialMessage, message);
+            }, 3000);
         }
 
         function typeMessage(message, element) {
